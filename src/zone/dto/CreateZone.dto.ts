@@ -1,0 +1,24 @@
+import {IsString, IsNumber, IsObject, ValidateNested, IsOptional } from "class-validator";
+import {Type} from "class-transformer";
+import {Location} from "./Location.dto";
+
+
+export class CreateZone {
+    //no corroboro el id porque es autogenerado por la base de datos
+    // @IsNumber()
+    // id: number;
+    @IsString()
+    name: string;
+
+    
+    @IsObject()
+        @ValidateNested()
+        @Type(() => Location)
+        location: Location;
+    
+    @IsNumber()
+    radius: number;
+
+    @IsOptional()
+    deliveryPersonId?: number; // Opcional, si se asigna una zona a un repartidor
+}
