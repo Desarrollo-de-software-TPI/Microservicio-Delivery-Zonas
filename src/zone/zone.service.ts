@@ -3,10 +3,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import type { Repository } from 'typeorm';
 import  { In } from 'typeorm';
 import { Zone } from './zone.entity';
-import type { CreateZoneDto, UpdateZoneDto, UpdatePartialZoneDto } from './zone.dto';
-import type { PaginationDto } from '../pagination/pagination.dto';
+//import type { CreateZoneDto, UpdateZoneDto, UpdatePartialZoneDto } from './zone.dto';
+//mport type { Pagination } from '../pagination/pagination.dto';
 
-
+//santi
+import { PaginationDto } from '../pagination/pagination.dto';
+import { CreateZone } from './dto/CreateZone.dto';
+import { UpdateZone } from './dto/UpdateZone.dto';
+import { UpdatePartialZone } from './dto/UpdatePartialZone.dto';
+import { AssignZone } from './dto/AssignZone.dto';
+import { Location } from 'src/location/Location.dto';
+//santi
 @Injectable()
 export class ZoneService {
   constructor(
@@ -14,8 +21,8 @@ export class ZoneService {
     private readonly zoneRepository: Repository<Zone>,
   ) {}
 
-  async findAll(paginationDto: PaginationDto): Promise<{zones: Zone[]; total: number}> {
-        const {limit, offset} = paginationDto;
+  async findAll(Pagination: PaginationDto): Promise<{zones: Zone[]; total: number}> {
+        const {limit, offset} = Pagination;
 
         const [zones, total] = await this.zoneRepository.findAndCount({
             take: limit,
@@ -25,8 +32,8 @@ export class ZoneService {
     }
 
 
-  async create(CreateZoneDto: CreateZoneDto): Promise<Zone> {
-    const zone = this.zoneRepository.create(CreateZoneDto);
+  async create(CreateZone: CreateZone): Promise<Zone> {
+    const zone = this.zoneRepository.create(CreateZone);
     return this.zoneRepository.save(zone);
   }
 
@@ -37,13 +44,13 @@ export class ZoneService {
     return await this.zoneRepository.find({ where: { id: In(zoneIds) } });
   }
   
-  async update(id: number, updateZoneDto: UpdateZoneDto): Promise<Zone | null> {
-    await this.zoneRepository.update(id, updateZoneDto);
+  async update(id: number, UpdateZone: UpdateZone): Promise<Zone | null> {
+    await this.zoneRepository.update(id, UpdateZone);
     return this.zoneRepository.findOne({ where:{id} });
   }
 
-  async updatePartial(id: number, updateZoneDto: UpdatePartialZoneDto): Promise<Zone | null> {
-    await this.zoneRepository.update(id, updateZoneDto);
+  async updatePartial(id: number, UpdateZone: UpdatePartialZone): Promise<Zone | null> {
+    await this.zoneRepository.update(id, UpdateZone);
     return this.zoneRepository.findOne({ where:{id} });
   }
   async remove(id: number): Promise<void> {

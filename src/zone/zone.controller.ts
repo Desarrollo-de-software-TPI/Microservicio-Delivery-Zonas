@@ -1,21 +1,28 @@
 import { Controller, Get, Post, Delete, Body, HttpException, HttpStatus, Param, Put, Patch, Query } from '@nestjs/common';
 import { ZoneService } from './zone.service';
 import { Zone } from './zone.entity';
-import { CreateZoneDto } from './zone.dto';
+
+
+//santi
+import { AssignZone } from './dto/AssignZone.dto';
+import { CreateZone } from './dto/CreateZone.dto';
+import { UpdateZone } from './dto/UpdateZone.dto';
+import { UpdatePartialZone } from './dto/UpdatePartialZone.dto';
 import { PaginationDto } from '../pagination/pagination.dto';
+import { Location  } from 'src/location/Location.dto';
 
 @Controller('zone')
 export class ZoneController {
   constructor(private readonly zoneService: ZoneService) {}
 
   @Get()
-    findAll(@Query() paginationDto: PaginationDto): Promise<{zones: Zone[]; total: number}> {
-        return this.zoneService.findAll(paginationDto);
+    findAll(@Query() pagination: PaginationDto): Promise<{zones: Zone[]; total: number}> {
+        return this.zoneService.findAll(pagination);
     }
 
   @Post()
-  create(@Body() createZoneDto: CreateZoneDto){
-    return this.zoneService.create(createZoneDto);
+  create(@Body() createZone: CreateZone){
+    return this.zoneService.create(createZone);
   }
 
   @Get(':id')
@@ -33,9 +40,9 @@ export class ZoneController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() updateZoneDto: CreateZoneDto) {
+  async update(@Param('id') id: string, @Body() UpdateZoneDto: CreateZone) {
     try {
-      const zone = await this.zoneService.update(+id, updateZoneDto);
+      const zone = await this.zoneService.update(+id, UpdateZoneDto);
       if (!zone) {
         throw new HttpException('Zone not found', HttpStatus.NOT_FOUND);
       }
@@ -46,7 +53,7 @@ export class ZoneController {
   }
 
   @Patch(':id')
-  async updatePartial(@Param('id') id: string, @Body() updateZoneDto: CreateZoneDto) {
+  async updatePartial(@Param('id') id: string, @Body() updateZoneDto: UpdatePartialZone) {
     try {
       const zone = await this.zoneService.updatePartial(+id, updateZoneDto);
       if (!zone) {
@@ -67,10 +74,6 @@ export class ZoneController {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-
-
-
-
 
 
 }

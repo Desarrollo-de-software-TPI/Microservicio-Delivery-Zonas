@@ -1,6 +1,6 @@
 import { Type } from "class-transformer";
 import { IsNumber, IsObject, ValidateNested } from "class-validator";
-import { Location } from "./Location.dto";
+import { Location } from "../../location/Location.dto";
 
 export class CreateDeliveryPerson {
     @IsNumber()
