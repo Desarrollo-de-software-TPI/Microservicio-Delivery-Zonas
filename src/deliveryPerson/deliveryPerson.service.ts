@@ -4,6 +4,7 @@ import  { Repository } from 'typeorm';
 import { DeliveryPersonEntity, DeliveryPersonStatus } from './deliveryPerson.entity';
 import { Zone} from 'src/zone/zone.entity';
 import { ZoneService } from '../zone/zone.service'; 
+/*
 import type {
   CreateDeliveryPersonDto,
   UpdateLocationDeliveryPersonDto,
@@ -13,6 +14,15 @@ import type {
   AssignZoneDeliveryPersonDto,
 } from "./deliveryPerson.dto"
 import { PaginationDto } from 'src/pagination/pagination.dto';
+
+*/
+import { PaginationDto } from 'src/pagination/pagination.dto';
+import { CreateDeliveryPerson } from './dto/CreateDeliveryPerson.dto';
+import { UpdateLocationDeliveryPerson } from './dto/UpdateLocationDeliveryPerson.dto';
+import { UpdateStatusDeliveryPerson } from './dto/UpdateStatusDeliveryPerson.dto';
+import { FindByProximityDeliveryPerson } from './dto/FindByProximityDeliveryPerson.dto';
+import { FindByZone } from './dto/FindByZone.dto';
+import { AssignZoneDeliveryPerson } from './dto/AssignZoneDeliveryPerson.dto';
 @Injectable()
 export class DeliveryPersonService {
   constructor(
@@ -38,19 +48,19 @@ export class DeliveryPersonService {
     return await this.deliveryPersonRepository.findOneOrFail({ where: { id } });
   }
 
-  async create(createDeliveryPersonDto: CreateDeliveryPersonDto): Promise<DeliveryPersonEntity> {
-    const deliveryPerson = this.deliveryPersonRepository.create(createDeliveryPersonDto)
+  async create(CreateDeliveryPerson: CreateDeliveryPerson): Promise<DeliveryPersonEntity> {
+    const deliveryPerson = this.deliveryPersonRepository.create(CreateDeliveryPerson)
     return await this.deliveryPersonRepository.save(deliveryPerson);
   }
 
   
 
-  async updateLocation(id: number, updateLocationDto: UpdateLocationDeliveryPersonDto): Promise<DeliveryPersonEntity> {
-    await this.deliveryPersonRepository.update(id, updateLocationDto)
+  async updateLocation(id: number, updateLocation: UpdateLocationDeliveryPerson): Promise<DeliveryPersonEntity> {
+    await this.deliveryPersonRepository.update(id, updateLocation)
     return this.deliveryPersonRepository.findOneOrFail({ where: { id } })
   }
 
-  async updateStatus(id: number, updateStatusDto: UpdateStatusDeliveryPersonDto): Promise<DeliveryPersonEntity> {
+  async updateStatus(id: number, updateStatusDto: UpdateStatusDeliveryPerson): Promise<DeliveryPersonEntity> {
     await this.deliveryPersonRepository.update(id, updateStatusDto)
     return this.deliveryPersonRepository.findOneOrFail({ where: { id } })
   }
@@ -67,7 +77,7 @@ export class DeliveryPersonService {
     return await this.deliveryPersonRepository.save(deliveryPerson);
   }
   */
-  async findByProximity(findByProximityDto: FindByProximityDeliveryPersonDto): Promise<DeliveryPersonEntity[]> {
+  async findByProximity(findByProximityDto: FindByProximityDeliveryPerson): Promise<DeliveryPersonEntity[]> {
     const { location, radius } = findByProximityDto
 
     // Get all delivery persons
@@ -94,8 +104,8 @@ export class DeliveryPersonService {
     return filteredDeliveryPersons
   }
 
-  async findByZone(findByZoneDto: FindByZoneDto): Promise<DeliveryPersonEntity[]> {
-    const { zoneId } = findByZoneDto
+  async findByZone(FindByZone: FindByZone): Promise<DeliveryPersonEntity[]> {
+    const { zoneId } = FindByZone
 
     // Find all delivery persons with the specified zone
     const deliveryPersons = await this.deliveryPersonRepository
@@ -107,7 +117,7 @@ export class DeliveryPersonService {
     return deliveryPersons
   }
 
-  async assignZone(id: number, assignZoneDto: AssignZoneDeliveryPersonDto): Promise<DeliveryPersonEntity | null> {
+  async assignZone(id: number, assignZoneDto: AssignZoneDeliveryPerson): Promise<DeliveryPersonEntity | null> {
     const { zoneIds } = assignZoneDto;
 
     // Buscar el repartidor

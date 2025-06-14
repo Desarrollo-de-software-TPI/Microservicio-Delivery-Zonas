@@ -1,15 +1,24 @@
 import { Controller, Get, Post, Body, Param, Put, Delete, HttpStatus, HttpException, ParseIntPipe, Query } from '@nestjs/common';
 import { DeliveryPersonService } from './deliveryPerson.service';
+/*
 import { 
-  CreateDeliveryPersonDto, 
-  UpdateLocationDeliveryPersonDto, 
+  CreateDeliveryPerson, 
+  UpdateLocationDeliveryPerson, 
   UpdateStatusDeliveryPersonDto, 
-  FindByProximityDeliveryPersonDto, 
-  FindByZoneDto, 
-  AssignZoneDeliveryPersonDto } from './deliveryPerson.dto';
+  FindByProximityDeliveryPerson, 
+  FindByZone, 
+  AssignZoneDeliveryPerson } from './deliveryPerson.dto';
 
-  import { PaginationDto } from 'src/pagination/pagination.dto';
 
+  */
+import { PaginationDto } from 'src/pagination/pagination.dto';
+
+import { CreateDeliveryPerson } from './dto/CreateDeliveryPerson.dto';
+import { UpdateLocationDeliveryPerson } from './dto/UpdateLocationDeliveryPerson.dto';
+import { UpdateStatusDeliveryPerson } from './dto/UpdateStatusDeliveryPerson.dto';
+import { FindByProximityDeliveryPerson } from './dto/FindByProximityDeliveryPerson.dto';
+import { FindByZone } from './dto/FindByZone.dto';
+import { AssignZoneDeliveryPerson } from './dto/AssignZoneDeliveryPerson.dto';
 @Controller('delivery')
 export class DeliveryPersonController {
   constructor(private readonly deliveryPersonService: DeliveryPersonService) {}
@@ -25,16 +34,16 @@ export class DeliveryPersonController {
   }
 
   @Post()
-  async create(@Body() createDeliveryPersonDto: CreateDeliveryPersonDto) {
+  async create(@Body() CreateDeliveryPerson: CreateDeliveryPerson) {
     try {
-      return await this.deliveryPersonService.create(createDeliveryPersonDto);
+      return await this.deliveryPersonService.create(CreateDeliveryPerson);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
   @Put(":id/location")
-  async updateLocation(@Param('id') id: string, @Body() updateLocationDto: UpdateLocationDeliveryPersonDto) {
+  async updateLocation(@Param('id') id: string, @Body() updateLocationDto: UpdateLocationDeliveryPerson) {
     try {
       const deliveryPerson = await this.deliveryPersonService.updateLocation(+id, updateLocationDto)
       if (!deliveryPerson) {
@@ -48,7 +57,7 @@ export class DeliveryPersonController {
 
 
   @Put(":id/status")
-  async updateStatus(@Param('id') id: string, @Body() updateStatusDto: UpdateStatusDeliveryPersonDto) {
+  async updateStatus(@Param('id') id: string, @Body() updateStatusDto: UpdateStatusDeliveryPerson) {
     try {
       const deliveryPerson = await this.deliveryPersonService.updateStatus(+id, updateStatusDto)
       if (!deliveryPerson) {
@@ -61,7 +70,7 @@ export class DeliveryPersonController {
   }
 
   @Get('findByProximity')
-  async findByProximity(@Body() findByProximityDto: FindByProximityDeliveryPersonDto) {
+  async findByProximity(@Body() findByProximityDto: FindByProximityDeliveryPerson) {
     try {
       return await this.deliveryPersonService.findByProximity(findByProximityDto);
     } catch (error) {
@@ -71,9 +80,9 @@ export class DeliveryPersonController {
 
 
   @Get('findByZone')
-  async findByZone(@Body() findByZoneDto: FindByZoneDto) {
+  async findByZone(@Body() FindByZone: FindByZone) {
     try {
-      return await this.deliveryPersonService.findByZone(findByZoneDto);
+      return await this.deliveryPersonService.findByZone(FindByZone);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -81,7 +90,7 @@ export class DeliveryPersonController {
 
 
   @Post(':id/assignZone')
-  async assignZone(@Param('id') id: string, @Body() assignZoneDto: AssignZoneDeliveryPersonDto) {
+  async assignZone(@Param('id') id: string, @Body() assignZoneDto: AssignZoneDeliveryPerson) {
     try {
       const deliveryPerson = await this.deliveryPersonService.assignZone(+id, assignZoneDto);
       if (!deliveryPerson) {
