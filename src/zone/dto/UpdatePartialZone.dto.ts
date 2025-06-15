@@ -1,6 +1,6 @@
 import {IsString, IsNumber, IsObject, ValidateNested} from "class-validator";
 import {Type} from "class-transformer";
-import {Location} from "./Location.dto";
+import {Location} from "../../location/Location.dto";
 
 export class UpdatePartialZone {
     @IsString()

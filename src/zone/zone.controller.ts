@@ -9,7 +9,6 @@ import { CreateZone } from './dto/CreateZone.dto';
 import { UpdateZone } from './dto/UpdateZone.dto';
 import { UpdatePartialZone } from './dto/UpdatePartialZone.dto';
 import { PaginationDto } from '../pagination/pagination.dto';
-import { Location  } from 'src/location/Location.dto';
 
 @Controller('zone')
 export class ZoneController {

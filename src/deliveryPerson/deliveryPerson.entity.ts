@@ -21,10 +21,7 @@ export class DeliveryPersonEntity extends BaseEntity {
     @Column({type: "integer", name : "personid"})
     personId: number;
 
-    /*@Column({ type: "varchar", length: 400 }) // Máximo para emails es 320 caracteres
-    email: string;
-    */
-    @Column({ type: "jsonb" }) // Usamos JSONB para almacenar el objeto de ubicación
+    @Column({ type: "jsonb" }) // Usamos JSON para almacenar el objeto de ubicación
     location: { lat: number; lng: number };
 
     @Column({ type: "decimal", precision: 10, scale: 3 })
