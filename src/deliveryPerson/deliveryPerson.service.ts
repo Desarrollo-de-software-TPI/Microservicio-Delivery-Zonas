@@ -4,14 +4,12 @@ import  { Repository } from 'typeorm';
 import { DeliveryPersonEntity, DeliveryPersonStatus } from './deliveryPerson.entity';
 import { Zone} from 'src/zone/zone.entity';
 import { ZoneService } from '../zone/zone.service'; 
-import type {
-  CreateDeliveryPersonDto,
-  UpdateLocationDeliveryPersonDto,
-  UpdateStatusDeliveryPersonDto,
-  FindByProximityDeliveryPersonDto,
-  FindByZoneDto,
-  AssignZoneDeliveryPersonDto,
-} from "./deliveryPerson.dto"
+import { CreateDeliveryPersonDto } from './dto/CreateDeliveryPerson.dto';
+import { UpdateLocationDeliveryPersonDto } from './dto/UpdateLocationDeliveryPerson.dto';
+import { UpdateStatusDeliveryPersonDto } from './dto/UpdateStatusDeliveryPerson.dto';
+import { FindByProximityDeliveryPersonDto } from './dto/FindByProximityDeliveryPerson.dto';
+import { FindByZoneDto } from './dto/FindByZone.dto';
+import { AssignZoneDeliveryPersonDto } from './dto/AssignZoneDeliveryPerson.dto';
 import { PaginationDto } from 'src/pagination/pagination.dto';
 @Injectable()
 export class DeliveryPersonService {
@@ -54,19 +52,6 @@ export class DeliveryPersonService {
     await this.deliveryPersonRepository.update(id, updateStatusDto)
     return this.deliveryPersonRepository.findOneOrFail({ where: { id } })
   }
-  /*
-  async updateLocation(deliveryPersonId: number, location: { lat: number; lng: number }): Promise<DeliveryPersonEntity> {
-      const deliveryPerson = await this.deliveryPersonRepository.findOneOrFail({ where: { id: deliveryPersonId } });
-      deliveryPerson.location = location;
-      return await this.deliveryPersonRepository.save(deliveryPerson);
-  } 
-  
-  async updateStatus(deliveryPersonId: number, status: DeliveryPersonStatus): Promise<DeliveryPersonEntity> {
-    const deliveryPerson = await this.deliveryPersonRepository.findOneOrFail({ where: { id: deliveryPersonId } });
-    deliveryPerson.status = status;
-    return await this.deliveryPersonRepository.save(deliveryPerson);
-  }
-  */
   async findByProximity(findByProximityDto: FindByProximityDeliveryPersonDto): Promise<DeliveryPersonEntity[]> {
     const { location, radius } = findByProximityDto
 
@@ -128,20 +113,6 @@ export class DeliveryPersonService {
 
     return this.deliveryPersonRepository.save(deliveryPerson);
 }
-   /*
-  async getZones(id: number): Promise<Zone[] | null> {
-    const deliveryPerson = await this.deliveryPersonRepository.findOne({
-      where: { id },
-      relations: ["zones"],
-    })
-
-    if (!deliveryPerson) {
-      return null
-    }
-
-    return deliveryPerson.zone
-  }
- */
   
   async getZonesAssigned(deliveryPersonId: number): Promise<Zone[]> {
     const deliveryPerson = await this.deliveryPersonRepository.findOne({
@@ -168,22 +139,7 @@ export class DeliveryPersonService {
   async remove(id: number): Promise<void> {
     await this.deliveryPersonRepository.delete(id);
   }
-  /*
-  async removeZone(id: number, zoneId: number): Promise<void> {
-    const deliveryPerson = await this.deliveryPersonRepository.findOne({
-      where: { id },
-      relations: ["zones"],
-    })
 
-    if (!deliveryPerson) {
-      throw new Error("Delivery person not found")
-    }
-
-    deliveryPerson.zones = deliveryPerson.zones.filter((zone) => zone.id !== zoneId)
-
-    await this.deliveryPersonRepository.save(deliveryPerson)
-  }
-  */
   async findByStatus(status: DeliveryPersonStatus): Promise<DeliveryPersonEntity[]> {
     return await this.deliveryPersonRepository.find({ where: { status } });
   }

@@ -1,14 +1,12 @@
 import { Controller, Get, Post, Body, Param, Put, Delete, HttpStatus, HttpException, ParseIntPipe, Query } from '@nestjs/common';
 import { DeliveryPersonService } from './deliveryPerson.service';
-import { 
-  CreateDeliveryPersonDto, 
-  UpdateLocationDeliveryPersonDto, 
-  UpdateStatusDeliveryPersonDto, 
-  FindByProximityDeliveryPersonDto, 
-  FindByZoneDto, 
-  AssignZoneDeliveryPersonDto } from './deliveryPerson.dto';
-
-  import { PaginationDto } from 'src/pagination/pagination.dto';
+import { PaginationDto } from 'src/pagination/pagination.dto';
+import { CreateDeliveryPersonDto } from './dto/CreateDeliveryPerson.dto';
+import { UpdateLocationDeliveryPersonDto } from './dto/UpdateLocationDeliveryPerson.dto';
+import { UpdateStatusDeliveryPersonDto } from './dto/UpdateStatusDeliveryPerson.dto';
+import { FindByProximityDeliveryPersonDto } from './dto/FindByProximityDeliveryPerson.dto';
+import { FindByZoneDto } from './dto/FindByZone.dto';
+import { AssignZoneDeliveryPersonDto } from './dto/AssignZoneDeliveryPerson.dto';
 
 @Controller('delivery')
 export class DeliveryPersonController {

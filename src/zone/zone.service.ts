@@ -3,7 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import type { Repository } from 'typeorm';
 import  { In } from 'typeorm';
 import { Zone } from './zone.entity';
-import type { CreateZoneDto, UpdateZoneDto, UpdatePartialZoneDto } from './zone.dto';
+import { AssignZoneDto } from './dto/AssignZone.dto';
+import { CreateZoneDto } from './dto/CreateZone.dto';
+import { UpdateZoneDto } from './dto/UpdateZone.dto';
+import { UpdatePartialZoneDto } from './dto/UpdatePartialZone.dto';
 import type { PaginationDto } from '../pagination/pagination.dto';
 
 

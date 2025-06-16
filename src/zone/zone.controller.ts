@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Delete, Body, HttpException, HttpStatus, Param, Put, Patch, Query } from '@nestjs/common';
 import { ZoneService } from './zone.service';
 import { Zone } from './zone.entity';
-import { CreateZoneDto } from './zone.dto';
+import { CreateZoneDto } from './dto/CreateZone.dto';
 import { PaginationDto } from '../pagination/pagination.dto';
 
 @Controller('zone')
