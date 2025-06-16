@@ -30,15 +30,15 @@ let ZoneService = class ZoneService {
         });
         return { zones, total };
     }
-    async create(CreateZone) {
-        const zone = this.zoneRepository.create(CreateZone);
-        return this.zoneRepository.save(zone);
-    }
     async findOne(id) {
         return this.zoneRepository.findOneOrFail({ where: { id } });
     }
     async findManyByIds(zoneIds) {
         return await this.zoneRepository.find({ where: { id: (0, typeorm_2.In)(zoneIds) } });
+    }
+    async create(CreateZone) {
+        const zone = this.zoneRepository.create(CreateZone);
+        return this.zoneRepository.save(zone);
     }
     async update(id, UpdateZone) {
         await this.zoneRepository.update(id, UpdateZone);

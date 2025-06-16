@@ -18,6 +18,8 @@ const zone_service_1 = require("./zone.service");
 const CreateZone_dto_1 = require("./dto/CreateZone.dto");
 const UpdatePartialZone_dto_1 = require("./dto/UpdatePartialZone.dto");
 const pagination_dto_1 = require("../pagination/pagination.dto");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
+const permissions_decorator_1 = require("../middlewares/decorators/permissions.decorator");
 let ZoneController = class ZoneController {
     zoneService;
     constructor(zoneService) {
@@ -77,6 +79,8 @@ let ZoneController = class ZoneController {
 };
 exports.ZoneController = ZoneController;
 __decorate([
+    (0, common_1.UseGuards)(auth_middleware_1.AuthGuard),
+    (0, permissions_decorator_1.Permissions)(['read_zone']),
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
@@ -84,6 +88,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ZoneController.prototype, "findAll", null);
 __decorate([
+    (0, common_1.UseGuards)(auth_middleware_1.AuthGuard),
+    (0, permissions_decorator_1.Permissions)(['create_zone']),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -91,6 +97,8 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ZoneController.prototype, "create", null);
 __decorate([
+    (0, common_1.UseGuards)(auth_middleware_1.AuthGuard),
+    (0, permissions_decorator_1.Permissions)(['read_zone']),
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -98,6 +106,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ZoneController.prototype, "findOne", null);
 __decorate([
+    (0, common_1.UseGuards)(auth_middleware_1.AuthGuard),
+    (0, permissions_decorator_1.Permissions)(['edit_zone']),
     (0, common_1.Put)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
@@ -106,6 +116,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ZoneController.prototype, "update", null);
 __decorate([
+    (0, common_1.UseGuards)(auth_middleware_1.AuthGuard),
+    (0, permissions_decorator_1.Permissions)(['edit_zone']),
     (0, common_1.Patch)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
@@ -114,6 +126,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ZoneController.prototype, "updatePartial", null);
 __decorate([
+    (0, common_1.UseGuards)(auth_middleware_1.AuthGuard),
+    (0, permissions_decorator_1.Permissions)(['delete_zone']),
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),

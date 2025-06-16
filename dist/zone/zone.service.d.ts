@@ -11,9 +11,9 @@ export declare class ZoneService {
         zones: Zone[];
         total: number;
     }>;
-    create(CreateZone: CreateZone): Promise<Zone>;
     findOne(id: number): Promise<Zone>;
     findManyByIds(zoneIds: number[]): Promise<Zone[]>;
+    create(CreateZone: CreateZone): Promise<Zone>;
     update(id: number, UpdateZone: UpdateZone): Promise<Zone | null>;
     updatePartial(id: number, UpdateZone: UpdatePartialZone): Promise<Zone | null>;
     remove(id: number): Promise<void>;
