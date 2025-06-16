@@ -4,18 +4,6 @@ import  { Repository } from 'typeorm';
 import { DeliveryPersonEntity, DeliveryPersonStatus } from './deliveryPerson.entity';
 import { Zone} from 'src/zone/zone.entity';
 import { ZoneService } from '../zone/zone.service'; 
-/*
-import type {
-  CreateDeliveryPersonDto,
-  UpdateLocationDeliveryPersonDto,
-  UpdateStatusDeliveryPersonDto,
-  FindByProximityDeliveryPersonDto,
-  FindByZoneDto,
-  AssignZoneDeliveryPersonDto,
-} from "./deliveryPerson.dto"
-import { PaginationDto } from 'src/pagination/pagination.dto';
-
-*/
 import { PaginationDto } from 'src/pagination/pagination.dto';
 import { CreateDeliveryPerson } from './dto/CreateDeliveryPerson.dto';
 import { UpdateLocationDeliveryPerson } from './dto/UpdateLocationDeliveryPerson.dto';
@@ -118,7 +106,7 @@ export class DeliveryPersonService {
         return null;
     }
 
-    // Buscar múltiples zonas con `findManyByIds()`
+    // Buscar múltiples zonas con findManyByIds()
     const zones = await this.zoneService.findManyByIds(zoneIds); 
 
     // aca se asignan las zonas al repartidor

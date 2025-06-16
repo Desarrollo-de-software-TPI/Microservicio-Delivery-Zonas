@@ -8,8 +8,6 @@ import { PaginationDto } from '../pagination/pagination.dto';
 import { CreateZone } from './dto/CreateZone.dto';
 import { UpdateZone } from './dto/UpdateZone.dto';
 import { UpdatePartialZone } from './dto/UpdatePartialZone.dto';
-import { AssignZone } from './dto/AssignZone.dto';
-import { Location } from 'src/location/Location.dto';
 
 @Injectable()
 export class ZoneService {

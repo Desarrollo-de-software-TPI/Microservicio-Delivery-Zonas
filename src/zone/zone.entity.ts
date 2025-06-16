@@ -10,12 +10,11 @@ export class Zone extends BaseEntity{
     name: string;
 
 
-    @Column({ type: "jsonb" }) // Usamos JSONB para almacenar el objeto de ubicación
+    @Column({ type: "jsonb" }) // Usamos JSON para almacenar el objeto de ubicación
         location: { lat: number; lng: number };
     
     @Column({ type: "decimal", precision: 10, scale: 3 })
     radius: number; //numero porque es radio en km, radio en km cuadradros que cubre la zona
-    //radius: number; //numero porque es radio en km
 
     @ManyToMany(() => DeliveryPersonEntity, deliveryPerson => deliveryPerson.zones)
     deliveryPerson: DeliveryPersonEntity[];

@@ -31,7 +31,6 @@ export class AuthGuard implements CanActivate {
             );
             const results = await Promise.allSettled(requests);
 
-            // Verifica si al menos una respuesta es exitosa
             const atLeastOneAllowed = results.some(result =>
                 result.status === 'fulfilled' && result.value.data
             );

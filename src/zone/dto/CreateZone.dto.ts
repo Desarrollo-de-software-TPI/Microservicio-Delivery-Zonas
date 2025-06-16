@@ -4,13 +4,9 @@ import {Location} from "../../location/Location.dto";
 
 
 export class CreateZone {
-    //no corroboro el id porque es autogenerado por la base de datos
-    // @IsNumber()
-    // id: number;
     @IsString()
     name: string;
 
-    
     @IsObject()
         @ValidateNested()
         @Type(() => Location)
