@@ -1,14 +1,5 @@
 import { Controller, Get, Post, Body, Param, Put, Delete, HttpStatus, HttpException, ParseIntPipe, Query, UseGuards } from '@nestjs/common';
 import { DeliveryPersonService } from './deliveryPerson.service';
-/*
-import { 
-  CreateDeliveryPerson, 
-  UpdateLocationDeliveryPerson, 
-  UpdateStatusDeliveryPersonDto, 
-  FindByProximityDeliveryPerson, 
-  FindByZone, 
-  AssignZoneDeliveryPerson } from './deliveryPerson.dto';
-  */
 import { PaginationDto } from 'src/pagination/pagination.dto';
 import { CreateDeliveryPerson } from './dto/CreateDeliveryPerson.dto';
 import { UpdateLocationDeliveryPerson } from './dto/UpdateLocationDeliveryPerson.dto';
@@ -24,7 +15,7 @@ export class DeliveryPersonController {
   constructor(private readonly deliveryPersonService: DeliveryPersonService) {}
 
   @UseGuards(AuthGuard)
-  @Permissions(['read_delivery'])
+  @Permissions(['delivery_read'])
   @Get()
   async findall(@Query()paginationDto:PaginationDto){
     try {
@@ -36,7 +27,7 @@ export class DeliveryPersonController {
   }
 
   @UseGuards(AuthGuard)
-  @Permissions(['create_delivery'])
+  @Permissions(['delivery_create'])
   @Post()
   async create(@Body() CreateDeliveryPerson: CreateDeliveryPerson) {
     try {
@@ -47,7 +38,7 @@ export class DeliveryPersonController {
   }
 
   @UseGuards(AuthGuard)
-  @Permissions(['edit_delivery'])
+  @Permissions(['delivery_edit'])
   @Put(":id/location")
   async updateLocation(@Param('id') id: string, @Body() updateLocationDto: UpdateLocationDeliveryPerson) {
     try {
@@ -62,7 +53,7 @@ export class DeliveryPersonController {
   }
 
   @UseGuards(AuthGuard)
-  @Permissions(['edit_delivery'])
+  @Permissions(['delivery_edit'])
   @Put(":id/status")
   async updateStatus(@Param('id') id: string, @Body() updateStatusDto: UpdateStatusDeliveryPerson) {
     try {
@@ -77,7 +68,7 @@ export class DeliveryPersonController {
   }
 
   @UseGuards(AuthGuard)
-  @Permissions(['read_delivery','delivery_zone_assignment'])
+  @Permissions(['delivery_read','delivery_zone_assignment'])
   @Get('findByProximity')
   async findByProximity(@Body() findByProximityDto: FindByProximityDeliveryPerson) {
     try {
@@ -88,7 +79,7 @@ export class DeliveryPersonController {
   }
 
   @UseGuards(AuthGuard)
-  @Permissions(['read_delivery'])
+  @Permissions(['delivery_read'])
   @Get('findByZone')
   async findByZone(@Body() FindByZone: FindByZone) {
     try {
@@ -114,7 +105,7 @@ export class DeliveryPersonController {
   }
 
   @UseGuards(AuthGuard)
-  @Permissions(['read_delivery'])
+  @Permissions(['delivery_read'])
   @Get(':id/zones')
   async getZonesAssigned(@Param('id', ParseIntPipe) id: number) {
     try {
@@ -143,7 +134,7 @@ export class DeliveryPersonController {
   }
 
   @UseGuards(AuthGuard)
-  @Permissions(['delete_delivery'])
+  @Permissions(['delivery_delete'])
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {
@@ -153,7 +144,4 @@ export class DeliveryPersonController {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-
-
-
 }

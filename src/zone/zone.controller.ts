@@ -14,21 +14,21 @@ export class ZoneController {
   constructor(private readonly zoneService: ZoneService) {}
 
   @UseGuards(AuthGuard)
-  @Permissions(['read_zone'])
+  @Permissions(['zone_read'])
   @Get()
     findAll(@Query() pagination: PaginationDto): Promise<{zones: Zone[]; total: number}> {
         return this.zoneService.findAll(pagination);
     }
 
   @UseGuards(AuthGuard)
-  @Permissions(['create_zone'])
+  @Permissions(['zone_create'])
   @Post()
   create(@Body() createZone: CreateZone){
     return this.zoneService.create(createZone);
   }
 
   @UseGuards(AuthGuard)
-  @Permissions(['read_zone'])
+  @Permissions(['zone_read'])
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
@@ -43,7 +43,7 @@ export class ZoneController {
   }
 
   @UseGuards(AuthGuard)
-  @Permissions(['edit_zone'])
+  @Permissions(['zone_edit'])
   @Put(':id')
   async update(@Param('id') id: string, @Body() UpdateZoneDto: CreateZone) {
     try {
@@ -58,7 +58,7 @@ export class ZoneController {
   }
 
   @UseGuards(AuthGuard)
-  @Permissions(['edit_zone'])
+  @Permissions(['zone_edit'])
   @Patch(':id')
   async updatePartial(@Param('id') id: string, @Body() updateZoneDto: UpdatePartialZone) {
     try {
@@ -73,7 +73,7 @@ export class ZoneController {
   }
 
   @UseGuards(AuthGuard)
-  @Permissions(['delete_zone'])
+  @Permissions(['zone_delete'])
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {
