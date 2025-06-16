@@ -64,26 +64,14 @@ export class DeliveryPersonService {
     await this.deliveryPersonRepository.update(id, updateStatusDto)
     return this.deliveryPersonRepository.findOneOrFail({ where: { id } })
   }
-  /*
-  async updateLocation(deliveryPersonId: number, location: { lat: number; lng: number }): Promise<DeliveryPersonEntity> {
-      const deliveryPerson = await this.deliveryPersonRepository.findOneOrFail({ where: { id: deliveryPersonId } });
-      deliveryPerson.location = location;
-      return await this.deliveryPersonRepository.save(deliveryPerson);
-  } 
-  
-  async updateStatus(deliveryPersonId: number, status: DeliveryPersonStatus): Promise<DeliveryPersonEntity> {
-    const deliveryPerson = await this.deliveryPersonRepository.findOneOrFail({ where: { id: deliveryPersonId } });
-    deliveryPerson.status = status;
-    return await this.deliveryPersonRepository.save(deliveryPerson);
-  }
-  */
+
   async findByProximity(findByProximityDto: FindByProximityDeliveryPerson): Promise<DeliveryPersonEntity[]> {
     const { location, radius } = findByProximityDto
 
-    // Get all delivery persons
+    // Obtener todos los repartidores
     const allDeliveryPersons = await this.deliveryPersonRepository.find()
 
-    // Calculate distance and filter by radius
+    // Calcular la distancia y filtrar por radio
     const filteredDeliveryPersons = allDeliveryPersons.filter((deliveryPerson) => {
       const distance = this.calculateDistance(
         location.lat,
@@ -94,7 +82,7 @@ export class DeliveryPersonService {
       return distance <= radius
     })
 
-    // Sort by distance
+    // Ordenar los repartidores filtrados por distancia
     filteredDeliveryPersons.sort((a, b) => {
       const distanceA = this.calculateDistance(location.lat, location.lng, a.location.lat, a.location.lng)
       const distanceB = this.calculateDistance(location.lat, location.lng, b.location.lat, b.location.lng)
@@ -107,7 +95,7 @@ export class DeliveryPersonService {
   async findByZone(FindByZone: FindByZone): Promise<DeliveryPersonEntity[]> {
     const { zoneId } = FindByZone
 
-    // Find all delivery persons with the specified zone
+    // Encontrar los repartidores que están asignados a la zona especificada
     const deliveryPersons = await this.deliveryPersonRepository
       .createQueryBuilder("deliveryPerson")
       .leftJoinAndSelect("deliveryPerson.zones", "zone")
@@ -138,20 +126,6 @@ export class DeliveryPersonService {
 
     return this.deliveryPersonRepository.save(deliveryPerson);
 }
-   /*
-  async getZones(id: number): Promise<Zone[] | null> {
-    const deliveryPerson = await this.deliveryPersonRepository.findOne({
-      where: { id },
-      relations: ["zones"],
-    })
-
-    if (!deliveryPerson) {
-      return null
-    }
-
-    return deliveryPerson.zone
-  }
- */
   
   async getZonesAssigned(deliveryPersonId: number): Promise<Zone[]> {
     const deliveryPerson = await this.deliveryPersonRepository.findOne({
@@ -178,22 +152,7 @@ export class DeliveryPersonService {
   async remove(id: number): Promise<void> {
     await this.deliveryPersonRepository.delete(id);
   }
-  /*
-  async removeZone(id: number, zoneId: number): Promise<void> {
-    const deliveryPerson = await this.deliveryPersonRepository.findOne({
-      where: { id },
-      relations: ["zones"],
-    })
 
-    if (!deliveryPerson) {
-      throw new Error("Delivery person not found")
-    }
-
-    deliveryPerson.zones = deliveryPerson.zones.filter((zone) => zone.id !== zoneId)
-
-    await this.deliveryPersonRepository.save(deliveryPerson)
-  }
-  */
   async findByStatus(status: DeliveryPersonStatus): Promise<DeliveryPersonEntity[]> {
     return await this.deliveryPersonRepository.find({ where: { status } });
   }

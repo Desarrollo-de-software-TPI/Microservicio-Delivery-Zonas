@@ -1,31 +1,35 @@
-import { Controller, Get, Post, Delete, Body, HttpException, HttpStatus, Param, Put, Patch, Query } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, HttpException, HttpStatus, Param, Put, Patch, Query, UseGuards} from '@nestjs/common';
 import { ZoneService } from './zone.service';
 import { Zone } from './zone.entity';
-
-
-//santi
 import { AssignZone } from './dto/AssignZone.dto';
 import { CreateZone } from './dto/CreateZone.dto';
 import { UpdateZone } from './dto/UpdateZone.dto';
 import { UpdatePartialZone } from './dto/UpdatePartialZone.dto';
 import { PaginationDto } from '../pagination/pagination.dto';
+import {AuthGuard} from "../middlewares/auth.middleware";
+import {Permissions} from "../middlewares/decorators/permissions.decorator";
 
 @Controller('zone')
 export class ZoneController {
   constructor(private readonly zoneService: ZoneService) {}
 
+  @UseGuards(AuthGuard)
+  @Permissions(['read_zone'])
   @Get()
     findAll(@Query() pagination: PaginationDto): Promise<{zones: Zone[]; total: number}> {
         return this.zoneService.findAll(pagination);
     }
 
+  @UseGuards(AuthGuard)
+  @Permissions(['create_zone'])
   @Post()
   create(@Body() createZone: CreateZone){
     return this.zoneService.create(createZone);
   }
 
+  @UseGuards(AuthGuard)
+  @Permissions(['read_zone'])
   @Get(':id')
-  //async findOne(@Param('id', ParseIntPipe) id: number) el parseIntPipe convierte el id a number
   async findOne(@Param('id') id: string) {
     try {
       const zone = await this.zoneService.findOne(+id);
@@ -38,6 +42,8 @@ export class ZoneController {
     }
   }
 
+  @UseGuards(AuthGuard)
+  @Permissions(['edit_zone'])
   @Put(':id')
   async update(@Param('id') id: string, @Body() UpdateZoneDto: CreateZone) {
     try {
@@ -51,6 +57,8 @@ export class ZoneController {
     }
   }
 
+  @UseGuards(AuthGuard)
+  @Permissions(['edit_zone'])
   @Patch(':id')
   async updatePartial(@Param('id') id: string, @Body() updateZoneDto: UpdatePartialZone) {
     try {
@@ -64,6 +72,8 @@ export class ZoneController {
     }
   }
 
+  @UseGuards(AuthGuard)
+  @Permissions(['delete_zone'])
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {

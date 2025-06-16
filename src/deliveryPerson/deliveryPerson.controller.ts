@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, HttpStatus, HttpException, ParseIntPipe, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, HttpStatus, HttpException, ParseIntPipe, Query, UseGuards } from '@nestjs/common';
 import { DeliveryPersonService } from './deliveryPerson.service';
 /*
 import { 
@@ -8,21 +8,23 @@ import {
   FindByProximityDeliveryPerson, 
   FindByZone, 
   AssignZoneDeliveryPerson } from './deliveryPerson.dto';
-
-
   */
 import { PaginationDto } from 'src/pagination/pagination.dto';
-
 import { CreateDeliveryPerson } from './dto/CreateDeliveryPerson.dto';
 import { UpdateLocationDeliveryPerson } from './dto/UpdateLocationDeliveryPerson.dto';
 import { UpdateStatusDeliveryPerson } from './dto/UpdateStatusDeliveryPerson.dto';
 import { FindByProximityDeliveryPerson } from './dto/FindByProximityDeliveryPerson.dto';
 import { FindByZone } from './dto/FindByZone.dto';
 import { AssignZoneDeliveryPerson } from './dto/AssignZoneDeliveryPerson.dto';
+import {Permissions} from "../middlewares/decorators/permissions.decorator";
+import {AuthGuard} from "../middlewares/auth.middleware";
+
 @Controller('delivery')
 export class DeliveryPersonController {
   constructor(private readonly deliveryPersonService: DeliveryPersonService) {}
 
+  @UseGuards(AuthGuard)
+  @Permissions(['read_delivery'])
   @Get()
   async findall(@Query()paginationDto:PaginationDto){
     try {
@@ -33,6 +35,8 @@ export class DeliveryPersonController {
     }
   }
 
+  @UseGuards(AuthGuard)
+  @Permissions(['create_delivery'])
   @Post()
   async create(@Body() CreateDeliveryPerson: CreateDeliveryPerson) {
     try {
@@ -42,6 +46,8 @@ export class DeliveryPersonController {
     }
   }
 
+  @UseGuards(AuthGuard)
+  @Permissions(['edit_delivery'])
   @Put(":id/location")
   async updateLocation(@Param('id') id: string, @Body() updateLocationDto: UpdateLocationDeliveryPerson) {
     try {
@@ -55,7 +61,8 @@ export class DeliveryPersonController {
     }
   }
 
-
+  @UseGuards(AuthGuard)
+  @Permissions(['edit_delivery'])
   @Put(":id/status")
   async updateStatus(@Param('id') id: string, @Body() updateStatusDto: UpdateStatusDeliveryPerson) {
     try {
@@ -69,6 +76,8 @@ export class DeliveryPersonController {
     }
   }
 
+  @UseGuards(AuthGuard)
+  @Permissions(['read_delivery','delivery_zone_assignment'])
   @Get('findByProximity')
   async findByProximity(@Body() findByProximityDto: FindByProximityDeliveryPerson) {
     try {
@@ -78,7 +87,8 @@ export class DeliveryPersonController {
     }
   }
 
-
+  @UseGuards(AuthGuard)
+  @Permissions(['read_delivery'])
   @Get('findByZone')
   async findByZone(@Body() FindByZone: FindByZone) {
     try {
@@ -88,7 +98,8 @@ export class DeliveryPersonController {
     }
   }
 
-
+  @UseGuards(AuthGuard)
+  @Permissions(['delivery_zone_assignment'])
   @Post(':id/assignZone')
   async assignZone(@Param('id') id: string, @Body() assignZoneDto: AssignZoneDeliveryPerson) {
     try {
@@ -102,6 +113,8 @@ export class DeliveryPersonController {
     }
   }
 
+  @UseGuards(AuthGuard)
+  @Permissions(['read_delivery'])
   @Get(':id/zones')
   async getZonesAssigned(@Param('id', ParseIntPipe) id: number) {
     try {
@@ -117,7 +130,8 @@ export class DeliveryPersonController {
     }
   }
 
-
+  @UseGuards(AuthGuard)
+  @Permissions(['delivery_zone_assignment'])
   @Delete(":id/zone/:zoneId")
   async removeZone(@Param('id') id: string, @Param('zoneId') zoneId: string) {
     try {
@@ -128,6 +142,8 @@ export class DeliveryPersonController {
     }
   }
 
+  @UseGuards(AuthGuard)
+  @Permissions(['delete_delivery'])
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {
