@@ -1,0 +1,679 @@
+<div class="container-fluid py-4">
+  <!-- Header -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <h1 class="display-4 text-center text-primary">Gestión de Delivery Persons</h1>
+    </div>
+  </div>
+
+  <!-- Botón para crear nuevo -->
+  <div class="row mb-4">
+    <div class="col-12 text-center">
+      <button 
+        class="btn btn-primary btn-lg" 
+        (click)="showCreateForm = !showCreateForm">
+        <i class="fas fa-plus me-2"></i>
+        {{ showCreateForm ? 'Cancelar' : 'Nuevo Delivery Person' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Formulario de creación -->
+  <div class="row mb-4" *ngIf="showCreateForm">
+    <div class="col-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h3 class="card-title mb-0">
+            <i class="fas fa-user-plus me-2"></i>
+            Crear Nuevo Delivery Person
+          </h3>
+        </div>
+        <div class="card-body">
+          <form (ngSubmit)="createDeliveryPerson()" #createForm="ngForm">
+            <div class="mb-3">
+              <label for="personId" class="form-label">ID de Persona:</label>
+              <input 
+                type="number" 
+                id="personId" 
+                class="form-control"
+                [(ngModel)]="newDeliveryPerson.personId" 
+                name="personId" 
+                required
+                placeholder="Ingrese el ID de la persona">
+            </div>
+            
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="lat" class="form-label">Latitud:</label>
+                  <input 
+                    type="number" 
+                    id="lat" 
+                    class="form-control"
+                    [(ngModel)]="newDeliveryPerson.location.lat" 
+                    name="lat" 
+                    step="any" 
+                    required
+                    placeholder="Ej: -34.6037">
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="lng" class="form-label">Longitud:</label>
+                  <input 
+                    type="number" 
+                    id="lng" 
+                    class="form-control"
+                    [(ngModel)]="newDeliveryPerson.location.lng" 
+                    name="lng" 
+                    step="any" 
+                    required
+                    placeholder="Ej: -58.3816">
+                </div>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="radius" class="form-label">Radio (km):</label>
+              <input 
+                type="number" 
+                id="radius" 
+                class="form-control"
+                [(ngModel)]="newDeliveryPerson.radius" 
+                name="radius" 
+                step="0.1" 
+                min="0.1" 
+                required
+                placeholder="Ej: 5.0">
+            </div>
+            
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button type="button" class="btn btn-secondary me-md-2" (click)="showCreateForm = false">
+                <i class="fas fa-times me-2"></i>Cancelar
+              </button>
+              <button type="submit" class="btn btn-success" [disabled]="!createForm.form.valid">
+                <i class="fas fa-save me-2"></i>Crear
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de delivery persons -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card shadow">
+        <div class="card-header bg-info text-white">
+          <h3 class="card-title mb-0">
+            <i class="fas fa-list me-2"></i>
+            Lista de Delivery Persons ({{ deliveryPersons.length }})
+          </h3>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover table-striped mb-0">
+              <thead class="table-dark">
+                <tr>
+                  <th>ID</th>
+                  <th>Persona ID</th>
+                  <th>Ubicación</th>
+                  <th>Radio</th>
+                  <th>Estado</th>
+                  <th>Zonas</th>
+                  <th class="text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let deliveryPerson of deliveryPersons" 
+                    [class.table-primary]="selectedDeliveryPerson?.id === deliveryPerson.id"
+                    style="cursor: pointer;"
+                    (click)="selectDeliveryPerson(deliveryPerson)">
+                  <td><strong>{{ deliveryPerson.id }}</strong></td>
+                  <td>{{ deliveryPerson.personId }}</td>
+                  <td>
+                    <small>
+                      {{ deliveryPerson.location.lat | number:'1.4-4' }}, 
+                      {{ deliveryPerson.location.lng | number:'1.4-4' }}
+                    </small>
+                  </td>
+                  <td>{{ deliveryPerson.radius }} km</td>
+                  <td>
+                    <span class="status-badge badge" [class]="'status-' + deliveryPerson.status">
+                      {{ getStatusLabel(deliveryPerson.status) }}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="badge bg-secondary">
+                      {{ deliveryPerson.zones?.length || 0 }} zonas
+                    </span>
+                  </td>
+                  <td class="text-center">
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button 
+                        class="btn btn-outline-info" 
+                        (click)="selectDeliveryPerson(deliveryPerson); $event.stopPropagation()"
+                        title="Ver detalles">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <button 
+                        class="btn btn-outline-danger" 
+                        (click)="deleteDeliveryPerson(deliveryPerson.id); $event.stopPropagation()"
+                        title="Eliminar">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr *ngIf="deliveryPersons.length === 0">
+                  <td colspan="7" class="text-center text-muted py-4">
+                    <i class="fas fa-inbox fa-2x mb-3 d-block"></i>
+                    No hay delivery persons registrados
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel de detalles -->
+  <div class="row mt-4" *ngIf="selectedDeliveryPerson">
+    <div class="col-12">
+      <div class="card shadow">
+        <div class="card-header bg-success text-white">
+          <h3 class="card-title mb-0">
+            <i class="fas fa-user-circle me-2"></i>
+            Detalles de Delivery Person #{{ selectedDeliveryPerson.id }}
+          </h3>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <!-- Información General -->
+            <div class="col-md-4">
+              <div class="card border-primary h-100">
+                <div class="card-header bg-primary text-white">
+                  <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Información General</h5>
+                </div>
+                <div class="card-body">
+                  <p><strong>ID:</strong> {{ selectedDeliveryPerson.id }}</p>
+                  <p><strong>Persona ID:</strong> {{ selectedDeliveryPerson.personId }}</p>
+                  <p><strong>Ubicación:</strong><br>
+                     <small>Lat: {{ selectedDeliveryPerson.location.lat | number:'1.4-4' }}<br>
+                     Lng: {{ selectedDeliveryPerson.location.lng | number:'1.4-4' }}</small>
+                  </p>
+                  <p><strong>Radio:</strong> {{ selectedDeliveryPerson.radius }} km</p>
+                  <p><strong>Estado:</strong><br>
+                     <span class="status-badge badge" [class]="'status-' + selectedDeliveryPerson.status">
+                       {{ getStatusLabel(selectedDeliveryPerson.status) }}
+                     </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Zonas Asignadas -->
+            <div class="col-md-4">
+              <div class="card border-info h-100">
+                <div class="card-header bg-info text-white">
+                  <h5 class="mb-0"><i class="fas fa-map-marked-alt me-2"></i>Zonas Asignadas</h5>
+                </div>
+                <div class="card-body">
+                  <div *ngIf="zones.length > 0; else noZones">
+                    <div class="d-flex justify-content-between align-items-center border-bottom py-2" 
+                         *ngFor="let zone of zones">
+                      <span>{{ zone.name || 'Zona #' + zone.id }}</span>
+                      <button 
+                        class="btn btn-sm btn-outline-danger" 
+                        (click)="removeZone(selectedDeliveryPerson!.id, zone.id)"
+                        title="Remover zona">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <ng-template #noZones>
+                    <div class="text-center text-muted">
+                      <i class="fas fa-map fa-2x mb-2 d-block"></i>
+                      <p>No hay zonas asignadas</p>
+                    </div>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+
+            <!-- Acciones -->
+            <div class="col-md-4">
+              <div class="card border-warning h-100">
+                <div class="card-header bg-warning">
+                  <h5 class="mb-0"><i class="fas fa-cogs me-2"></i>Acciones</h5>
+                </div>
+                <div class="card-body">
+                  <div class="d-grid gap-2">
+                    <button 
+                      class="btn btn-warning" 
+                      (click)="showUpdateLocationForm = true">
+                      <i class="fas fa-map-marker-alt me-2"></i>Actualizar Ubicación
+                    </button>
+                    <button 
+                      class="btn btn-info" 
+                      (click)="showUpdateStatusForm = true">
+                      <i class="fas fa-sync-alt me-2"></i>Cambiar Estado
+                    </button>
+                    <button 
+                      class="btn btn-success" 
+                      (click)="showAssignZoneForm = true">
+                      <i class="fas fa-plus-circle me-2"></i>Asignar Zona
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modales Bootstrap -->
+
+<!-- Modal para actualizar ubicación -->
+<div class="modal fade" [class.show]="showUpdateLocationForm" [style.display]="showUpdateLocationForm ? 'block' : 'none'" 
+     *ngIf="showUpdateLocationForm && selectedDeliveryPerson">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-warning">
+        <h5 class="modal-title">
+          <i class="fas fa-map-marker-alt me-2"></i>Actualizar Ubicación
+        </h5>
+        <button type="button" class="btn-close" (click)="showUpdateLocationForm = false"></button>
+      </div>
+      <form (ngSubmit)="updateLocation(selectedDeliveryPerson.id)">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="updateLat" class="form-label">Latitud:</label>
+            <input 
+              type="number" 
+              id="updateLat" 
+              class="form-control"
+              [(ngModel)]="updateLocationData.location.lat" 
+              name="updateLat" 
+              step="any" 
+              required>
+          </div>
+          
+          <div class="mb-3">
+            <label for="updateLng" class="form-label">Longitud:</label>
+            <input 
+              type="number" 
+              id="updateLng" 
+              class="form-control"
+              [(ngModel)]="updateLocationData.location.lng" 
+              name="updateLng" 
+              step="any" 
+              required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="showUpdateLocationForm = false">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-warning">
+            <i class="fas fa-save me-2"></i>Actualizar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para actualizar estado -->
+<div class="modal fade" [class.show]="showUpdateStatusForm" [style.display]="showUpdateStatusForm ? 'block' : 'none'"
+     *ngIf="showUpdateStatusForm && selectedDeliveryPerson">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title">
+          <i class="fas fa-sync-alt me-2"></i>Cambiar Estado
+        </h5>
+        <button type="button" class="btn-close" (click)="showUpdateStatusForm = false"></button>
+      </div>
+      <form (ngSubmit)="updateStatus(selectedDeliveryPerson.id)">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="updateStatus" class="form-label">Estado:</label>
+            <select 
+              id="updateStatus" 
+              class="form-select"
+              [(ngModel)]="updateStatusData.status" 
+              name="updateStatus" 
+              required>
+              <option *ngFor="let status of deliveryPersonStatuses" [value]="status">
+                {{ getStatusLabel(status) }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="showUpdateStatusForm = false">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-info">
+            <i class="fas fa-save me-2"></i>Actualizar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para asignar zona -->
+<div class="modal fade" [class.show]="showAssignZoneForm" [style.display]="showAssignZoneForm ? 'block' : 'none'"
+     *ngIf="showAssignZoneForm && selectedDeliveryPerson">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success">
+        <h5 class="modal-title">
+          <i class="fas fa-plus-circle me-2"></i>Asignar Zona
+        </h5>
+        <button type="button" class="btn-close" (click)="showAssignZoneForm = false"></button>
+      </div>
+      <form (ngSubmit)="assignZone(selectedDeliveryPerson.id)">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="assignZone" class="form-label">ID de Zona:</label>
+            <input 
+              type="number" 
+              id="assignZone" 
+              class="form-control"
+              [(ngModel)]="assignZoneData.zoneId" 
+              name="assignZone" 
+              required
+              placeholder="Ingrese el ID de la zona">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="showAssignZoneForm = false">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-success">
+            <i class="fas fa-save me-2"></i>Asignar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Backdrop para modales -->
+<div class="modal-backdrop fade show" 
+     *ngIf="showUpdateLocationForm || showUpdateStatusForm || showAssignZoneForm"
+     (click)="showUpdateLocationForm = false; showUpdateStatusForm = false; showAssignZoneForm = false"></div>
+
+  <!-- Formulario de creación -->
+  <div class="form-container" *ngIf="showCreateForm">
+    <h2>Crear Nuevo Delivery Person</h2>
+    <form (ngSubmit)="createDeliveryPerson()" #createForm="ngForm">
+      <div class="form-group">
+        <label for="personId">ID de Persona:</label>
+        <input 
+          type="number" 
+          id="personId" 
+          [(ngModel)]="newDeliveryPerson.personId" 
+          name="personId" 
+          required>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="lat">Latitud:</label>
+          <input 
+            type="number" 
+            id="lat" 
+            [(ngModel)]="newDeliveryPerson.location.lat" 
+            name="lat" 
+            step="any" 
+            required>
+        </div>
+        
+        <div class="form-group">
+          <label for="lng">Longitud:</label>
+          <input 
+            type="number" 
+            id="lng" 
+            [(ngModel)]="newDeliveryPerson.location.lng" 
+            name="lng" 
+            step="any" 
+            required>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="radius">Radio (km):</label>
+        <input 
+          type="number" 
+          id="radius" 
+          [(ngModel)]="newDeliveryPerson.radius" 
+          name="radius" 
+          step="0.1" 
+          min="0.1" 
+          required>
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" class="btn btn-success" [disabled]="!createForm.form.valid">
+          Crear
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="showCreateForm = false">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Lista de delivery persons -->
+  <div class="delivery-list">
+    <h2>Lista de Delivery Persons</h2>
+    
+    <div class="table-container">
+      <table class="delivery-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Persona ID</th>
+            <th>Ubicación</th>
+            <th>Radio</th>
+            <th>Estado</th>
+            <th>Zonas</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let deliveryPerson of deliveryPersons" 
+              [class.selected]="selectedDeliveryPerson?.id === deliveryPerson.id"
+              (click)="selectDeliveryPerson(deliveryPerson)">
+            <td>{{ deliveryPerson.id }}</td>
+            <td>{{ deliveryPerson.personId }}</td>
+            <td>{{ deliveryPerson.location.lat | number:'1.4-4' }}, 
+                {{ deliveryPerson.location.lng | number:'1.4-4' }}</td>
+            <td>{{ deliveryPerson.radius }} km</td>
+            <td>
+              <span class="status-badge" [class]="'status-' + deliveryPerson.status">
+                {{ getStatusLabel(deliveryPerson.status) }}
+              </span>
+            </td>
+            <td>{{ deliveryPerson.zones?.length || 0 }} zonas</td>
+            <td>
+              <div class="action-buttons">
+                <button 
+                  class="btn btn-sm btn-info" 
+                  (click)="selectDeliveryPerson(deliveryPerson); $event.stopPropagation()">
+                  Ver
+                </button>
+                <button 
+                  class="btn btn-sm btn-danger" 
+                  (click)="deleteDeliveryPerson(deliveryPerson.id); $event.stopPropagation()">
+                  Eliminar
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Panel de detalles del delivery person seleccionado -->
+  <div class="details-panel" *ngIf="selectedDeliveryPerson">
+    <h2>Detalles de Delivery Person #{{ selectedDeliveryPerson.id }}</h2>
+    
+    <div class="details-content">
+      <div class="info-section">
+        <h3>Información General</h3>
+        <p><strong>ID:</strong> {{ selectedDeliveryPerson.id }}</p>
+        <p><strong>Persona ID:</strong> {{ selectedDeliveryPerson.personId }}</p>
+        <p><strong>Ubicación:</strong> {{ selectedDeliveryPerson.location.lat | number:'1.4-4' }}, 
+           {{ selectedDeliveryPerson.location.lng | number:'1.4-4' }}</p>
+        <p><strong>Radio:</strong> {{ selectedDeliveryPerson.radius }} km</p>
+        <p><strong>Estado:</strong> 
+           <span class="status-badge" [class]="'status-' + selectedDeliveryPerson.status">
+             {{ getStatusLabel(selectedDeliveryPerson.status) }}
+           </span>
+        </p>
+      </div>
+
+      <!-- Zonas asignadas -->
+      <div class="zones-section">
+        <h3>Zonas Asignadas</h3>
+        <div class="zones-list" *ngIf="zones.length > 0; else noZones">
+          <div class="zone-item" *ngFor="let zone of zones">
+            <span>{{ zone.name || 'Zona #' + zone.id }}</span>
+            <button 
+              class="btn btn-sm btn-danger" 
+              (click)="removeZone(selectedDeliveryPerson!.id, zone.id)">
+              Remover
+            </button>
+          </div>
+        </div>
+        <ng-template #noZones>
+          <p class="no-zones">No hay zonas asignadas</p>
+        </ng-template>
+      </div>
+
+      <!-- Acciones rápidas -->
+      <div class="actions-section">
+        <h3>Acciones</h3>
+        <div class="action-buttons">
+          <button 
+            class="btn btn-warning" 
+            (click)="showUpdateLocationForm = true">
+            Actualizar Ubicación
+          </button>
+          <button 
+            class="btn btn-info" 
+            (click)="showUpdateStatusForm = true">
+            Cambiar Estado
+          </button>
+          <button 
+            class="btn btn-success" 
+            (click)="showAssignZoneForm = true">
+            Asignar Zona
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para actualizar ubicación -->
+  <div class="modal" *ngIf="showUpdateLocationForm && selectedDeliveryPerson">
+    <div class="modal-content">
+      <h3>Actualizar Ubicación</h3>
+      <form (ngSubmit)="updateLocation(selectedDeliveryPerson.id)">
+        <div class="form-group">
+          <label for="updateLat">Latitud:</label>
+          <input 
+            type="number" 
+            id="updateLat" 
+            [(ngModel)]="updateLocationData.location.lat" 
+            name="updateLat" 
+            step="any" 
+            required>
+        </div>
+        
+        <div class="form-group">
+          <label for="updateLng">Longitud:</label>
+          <input 
+            type="number" 
+            id="updateLng" 
+            [(ngModel)]="updateLocationData.location.lng" 
+            name="updateLng" 
+            step="any" 
+            required>
+        </div>
+        
+        <div class="form-actions">
+          <button type="submit" class="btn btn-success">Actualizar</button>
+          <button type="button" class="btn btn-secondary" (click)="showUpdateLocationForm = false">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal para actualizar estado -->
+  <div class="modal" *ngIf="showUpdateStatusForm && selectedDeliveryPerson">
+    <div class="modal-content">
+      <h3>Cambiar Estado</h3>
+      <form (ngSubmit)="updateStatus(selectedDeliveryPerson.id)">
+        <div class="form-group">
+          <label for="updateStatus">Estado:</label>
+          <select 
+            id="updateStatus" 
+            [(ngModel)]="updateStatusData.status" 
+            name="updateStatus" 
+            required>
+            <option *ngFor="let status of deliveryPersonStatuses" [value]="status">
+              {{ getStatusLabel(status) }}
+            </option>
+          </select>
+        </div>
+        
+        <div class="form-actions">
+          <button type="submit" class="btn btn-success">Actualizar</button>
+          <button type="button" class="btn btn-secondary" (click)="showUpdateStatusForm = false">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal para asignar zona -->
+  <div class="modal" *ngIf="showAssignZoneForm && selectedDeliveryPerson">
+    <div class="modal-content">
+      <h3>Asignar Zona</h3>
+      <form (ngSubmit)="assignZone(selectedDeliveryPerson.id)">
+        <div class="form-group">
+          <label for="assignZone">ID de Zona:</label>
+          <input 
+            type="number" 
+            id="assignZone" 
+            [(ngModel)]="assignZoneData.zoneId" 
+            name="assignZone" 
+            required>
+        </div>
+        
+        <div class="form-actions">
+          <button type="submit" class="btn btn-success">Asignar</button>
+          <button type="button" class="btn btn-secondary" (click)="showAssignZoneForm = false">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>

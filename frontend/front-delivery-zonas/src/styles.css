@@ -1,0 +1,56 @@
+/* You can add global styles to this file, and also import other style files */
+@import '~bootstrap/dist/css/bootstrap.min.css';
+@import '~@fortawesome/fontawesome-free/css/all.min.css';
+
+/* Estilos globales personalizados */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+}
+
+.navbar-brand {
+  font-weight: bold;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.status-available {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-in_route {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-delivering {
+  background-color: #cce7ff;
+  color: #004085;
+}
+
+.status-waiting_for_order {
+  background-color: #e2e3e5;
+  color: #383d41;
+}
+
+.status-unavailable {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.status-with_issue {
+  background-color: #ffeaa7;
+  color: #6c5ce7;
+}
+
+.status-offline {
+  background-color: #6c757d;
+  color: white;
+}
