@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import  { Repository } from 'typeorm';
 import { DeliveryPersonEntity, DeliveryPersonStatus } from './deliveryPerson.entity';
 import { Zone} from 'src/zone/zone.entity';
 import { ZoneService } from '../zone/zone.service'; 
-import { PaginationDto } from 'src/pagination/pagination.dto';
+import { PaginationDto } from 'src/common/pagination/pagination.dto';
 import { CreateDeliveryPerson } from './dto/CreateDeliveryPerson.dto';
 import { UpdateLocationDeliveryPerson } from './dto/UpdateLocationDeliveryPerson.dto';
 import { UpdateStatusDeliveryPerson } from './dto/UpdateStatusDeliveryPerson.dto';
@@ -21,6 +21,11 @@ export class DeliveryPersonService {
 
   ) {}
 
+  async create(CreateDeliveryPerson: CreateDeliveryPerson): Promise<DeliveryPersonEntity> {
+    const deliveryPerson = this.deliveryPersonRepository.create(CreateDeliveryPerson)
+    return await this.deliveryPersonRepository.save(deliveryPerson);
+  }
+
   async findAll(paginationDto:PaginationDto): Promise<{deliveries: DeliveryPersonEntity[]; total: number}> {
      const {limit, offset} = paginationDto;
 
@@ -33,26 +38,39 @@ export class DeliveryPersonService {
   }
 
   async findById(id: number): Promise<DeliveryPersonEntity> {
-    return await this.deliveryPersonRepository.findOneOrFail({ where: { id } });
+    return await this.deliveryPersonRepository.findOneOrFail({ where: { id }, relations: ['zones'] });
   }
-
-  async create(CreateDeliveryPerson: CreateDeliveryPerson): Promise<DeliveryPersonEntity> {
-    const deliveryPerson = this.deliveryPersonRepository.create(CreateDeliveryPerson)
-    return await this.deliveryPersonRepository.save(deliveryPerson);
-  }
-
-  
-
+  /*
   async updateLocation(id: number, updateLocation: UpdateLocationDeliveryPerson): Promise<DeliveryPersonEntity> {
     await this.deliveryPersonRepository.update(id, updateLocation)
     return this.deliveryPersonRepository.findOneOrFail({ where: { id } })
   }
+*/
+  async updateLocation(id: number, updateLocation: UpdateLocationDeliveryPerson): Promise<DeliveryPersonEntity> {
+  // Verificamos si existe y cargamos la entidad
+    const deliveryPerson = await this.deliveryPersonRepository.findOne({ where: { id } })
+    if (!deliveryPerson) {
+      throw new NotFoundException(`Delivery person with ID ${id} not found`)
+    }
 
+    // Actualizamos solo la propiedad necesaria
+    Object.assign(deliveryPerson, updateLocation)
+
+    // Save dispara hooks/eventos del ciclo de vida (@BeforeUpdate, etc.)
+    return this.deliveryPersonRepository.save(deliveryPerson)
+  }
+    /*
   async updateStatus(id: number, updateStatusDto: UpdateStatusDeliveryPerson): Promise<DeliveryPersonEntity> {
     await this.deliveryPersonRepository.update(id, updateStatusDto)
     return this.deliveryPersonRepository.findOneOrFail({ where: { id } })
   }
-
+*/
+  async updateStatus(id: number, dto: UpdateStatusDeliveryPerson): Promise<DeliveryPersonEntity> {
+    const entity = await this.deliveryPersonRepository.findOneOrFail({ where: { id } })
+    Object.assign(entity, dto)
+    return this.deliveryPersonRepository.save(entity)
+  }
+  
   async findByProximity(findByProximityDto: FindByProximityDeliveryPerson): Promise<DeliveryPersonEntity[]> {
     const { location, radius } = findByProximityDto
 

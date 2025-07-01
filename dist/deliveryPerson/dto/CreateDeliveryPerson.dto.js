@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateDeliveryPerson = void 0;
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
-const Location_dto_1 = require("../../location/Location.dto");
+const Location_dto_1 = require("../../common/dto/Location.dto");
 class CreateDeliveryPerson {
     personId;
     location;
@@ -26,8 +26,8 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsObject)(),
     (0, class_validator_1.ValidateNested)(),
-    (0, class_transformer_1.Type)(() => Location_dto_1.Location),
-    __metadata("design:type", Location_dto_1.Location)
+    (0, class_transformer_1.Type)(() => Location_dto_1.LocationDto),
+    __metadata("design:type", Location_dto_1.LocationDto)
 ], CreateDeliveryPerson.prototype, "location", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),

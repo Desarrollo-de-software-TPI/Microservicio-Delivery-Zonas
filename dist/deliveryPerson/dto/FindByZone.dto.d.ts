@@ -1,4 +1,4 @@
-import { PaginationDto } from "src/pagination/pagination.dto";
+import { PaginationDto } from "src/common/pagination/pagination.dto";
 export declare class FindByZone extends PaginationDto {
     zoneId: number;
 }

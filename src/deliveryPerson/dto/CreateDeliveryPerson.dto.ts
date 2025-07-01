@@ -1,6 +1,6 @@
 import { Type } from "class-transformer";
 import { IsNumber, IsObject, ValidateNested } from "class-validator";
-import { Location } from "../../location/Location.dto";
+import { LocationDto } from "../../common/dto/Location.dto";
 
 export class CreateDeliveryPerson {
     @IsNumber()
@@ -8,8 +8,8 @@ export class CreateDeliveryPerson {
 
     @IsObject()
     @ValidateNested()
-    @Type(() => Location)
-    location: Location;
+    @Type(() => LocationDto)
+    location: LocationDto;
 
     @IsNumber()
     radius: number; // Radio en km cuadrado que cubre la zona

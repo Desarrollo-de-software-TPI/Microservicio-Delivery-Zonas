@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Param, Put, Delete, HttpStatus, HttpException, ParseIntPipe, Query, UseGuards } from '@nestjs/common';
 import { DeliveryPersonService } from './deliveryPerson.service';
-import { PaginationDto } from 'src/pagination/pagination.dto';
+import { PaginationDto } from 'src/common/pagination/pagination.dto';
 import { CreateDeliveryPerson } from './dto/CreateDeliveryPerson.dto';
 import { UpdateLocationDeliveryPerson } from './dto/UpdateLocationDeliveryPerson.dto';
 import { UpdateStatusDeliveryPerson } from './dto/UpdateStatusDeliveryPerson.dto';
@@ -9,10 +9,23 @@ import { FindByZone } from './dto/FindByZone.dto';
 import { AssignZoneDeliveryPerson } from './dto/AssignZoneDeliveryPerson.dto';
 import {Permissions} from "../middlewares/decorators/permissions.decorator";
 import {AuthGuard} from "../middlewares/auth.middleware";
+import { DeliveryPersonEntity } from './deliveryPerson.entity';
 
 @Controller('delivery')
 export class DeliveryPersonController {
+  deliveryService: any;
   constructor(private readonly deliveryPersonService: DeliveryPersonService) {}
+
+  @UseGuards(AuthGuard)
+  @Permissions(['delivery_create'])
+  @Post()
+  async create(@Body() CreateDeliveryPerson: CreateDeliveryPerson) {
+    try {
+      return await this.deliveryPersonService.create(CreateDeliveryPerson);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
 
   @UseGuards(AuthGuard)
   @Permissions(['delivery_read'])
@@ -25,17 +38,12 @@ export class DeliveryPersonController {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-
   @UseGuards(AuthGuard)
-  @Permissions(['delivery_create'])
-  @Post()
-  async create(@Body() CreateDeliveryPerson: CreateDeliveryPerson) {
-    try {
-      return await this.deliveryPersonService.create(CreateDeliveryPerson);
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    @Permissions(['delivery_read'])
+    @Get(':id')
+    findOne(@Param('id') id: number): Promise<DeliveryPersonEntity> {
+        return this.deliveryService.findOne(id);
     }
-  }
 
   @UseGuards(AuthGuard)
   @Permissions(['delivery_edit'])

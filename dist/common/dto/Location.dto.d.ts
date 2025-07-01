@@ -1,4 +1,4 @@
-export declare class Location {
+export declare class LocationDto {
     lat: number;
     lng: number;
 }

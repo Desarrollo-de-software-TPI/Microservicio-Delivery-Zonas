@@ -1,10 +1,10 @@
 import { IsObject, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
-import { Location } from "../../location/Location.dto";
+import { LocationDto } from "../../common/dto/Location.dto";
 
 export class UpdateLocationDeliveryPerson {
     @IsObject()
     @ValidateNested()
-    @Type(() => Location)
-    location: Location;
+    @Type(() => LocationDto)
+    location: LocationDto;
 }

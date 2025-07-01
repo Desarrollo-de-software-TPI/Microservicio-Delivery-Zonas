@@ -4,7 +4,7 @@ import type { Repository } from 'typeorm';
 import  { In } from 'typeorm';
 import { Zone } from './zone.entity';
 
-import { PaginationDto } from '../pagination/pagination.dto';
+import { PaginationDto } from '../common/pagination/pagination.dto';
 import { CreateZone } from './dto/CreateZone.dto';
 import { UpdateZone } from './dto/UpdateZone.dto';
 import { UpdatePartialZone } from './dto/UpdatePartialZone.dto';

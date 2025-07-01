@@ -1,6 +1,6 @@
 import { IsNumber } from "class-validator";
 
-export class Location {
+export class LocationDto {
     @IsNumber()
     lat: number;
 

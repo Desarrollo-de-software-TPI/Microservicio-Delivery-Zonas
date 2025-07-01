@@ -5,7 +5,7 @@ import { AssignZone } from './dto/AssignZone.dto';
 import { CreateZone } from './dto/CreateZone.dto';
 import { UpdateZone } from './dto/UpdateZone.dto';
 import { UpdatePartialZone } from './dto/UpdatePartialZone.dto';
-import { PaginationDto } from '../pagination/pagination.dto';
+import { PaginationDto } from '../common/pagination/pagination.dto';
 import {AuthGuard} from "../middlewares/auth.middleware";
 import {Permissions} from "../middlewares/decorators/permissions.decorator";
 

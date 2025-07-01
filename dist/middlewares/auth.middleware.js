@@ -14,6 +14,7 @@ const common_1 = require("@nestjs/common");
 const core_1 = require("@nestjs/core");
 const axios_1 = require("axios");
 const process = require("node:process");
+const permissions_decorator_1 = require("./decorators/permissions.decorator");
 let AuthGuard = class AuthGuard {
     reflector;
     constructor(reflector) {
@@ -22,35 +23,42 @@ let AuthGuard = class AuthGuard {
     async canActivate(context) {
         try {
             const request = context.switchToHttp().getRequest();
-            const token = request.headers.authorization.replace('Bearer ', '');
-            const permissions = this.reflector.get('permissions', context.getHandler());
+            const token = request.headers.authorization?.replace('Bearer ', '');
+            if (!token) {
+                throw new common_1.UnauthorizedException('No token provided');
+            }
+            const permissions = this.reflector.get(permissions_decorator_1.Permissions, context.getHandler());
             const baseURL = process.env.JWT_SERVICE_URL || 'http://localhost:3001';
             const requests = permissions.map((permission) => axios_1.default.get(`${baseURL}/can-do/${permission}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
+                    'Content-Type': 'application/json',
+                },
             }));
             const results = await Promise.allSettled(requests);
-            const atLeastOneAllowed = results.some(result => result.status === 'fulfilled' && result.value.data);
+            const atLeastOneAllowed = results.some((result) => result.status === 'fulfilled' && result.value.data);
             if (atLeastOneAllowed) {
                 return true;
             }
             else {
-                throw new common_1.UnauthorizedException("error");
+                throw new common_1.ForbiddenException('Insufficient permissions');
             }
         }
         catch (error) {
-            let errorMessage = error?.message;
-            if (error.isAxiosError && error.response) {
-                errorMessage = error.response.data?.message || error.response.data || error.message;
-                throw new common_1.UnauthorizedException({
-                    message: errorMessage,
-                    error: error.response.data.error,
-                    status: error.response.status
-                });
+            if (error instanceof common_1.UnauthorizedException || error instanceof common_1.ForbiddenException) {
+                throw error;
             }
-            throw new common_1.UnauthorizedException(errorMessage);
+            if (error.isAxiosError && error.response) {
+                const status = error.response.status;
+                const message = error.response.data?.message || error.message;
+                if (status === 401) {
+                    throw new common_1.UnauthorizedException(message);
+                }
+                else if (status === 403) {
+                    throw new common_1.ForbiddenException(message);
+                }
+            }
+            throw new common_1.UnauthorizedException('An unexpected error occurred');
         }
     }
 };

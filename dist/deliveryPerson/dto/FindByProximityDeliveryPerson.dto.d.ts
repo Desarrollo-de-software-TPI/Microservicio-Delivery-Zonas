@@ -1,6 +1,6 @@
-import { PaginationDto } from "src/pagination/pagination.dto";
-import { Location } from "../../location/Location.dto";
+import { PaginationDto } from "src/common/pagination/pagination.dto";
+import { LocationDto } from "../../common/dto/Location.dto";
 export declare class FindByProximityDeliveryPerson extends PaginationDto {
-    location: Location;
+    location: LocationDto;
     radius: number;
 }

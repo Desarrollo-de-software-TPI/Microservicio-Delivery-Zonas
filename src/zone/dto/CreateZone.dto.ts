@@ -1,6 +1,6 @@
 import {IsString, IsNumber, IsObject, ValidateNested, IsOptional } from "class-validator";
 import {Type} from "class-transformer";
-import {Location} from "../../location/Location.dto";
+import { LocationDto } from "../../common/dto/Location.dto";
 
 
 export class CreateZone {
@@ -9,8 +9,8 @@ export class CreateZone {
 
     @IsObject()
         @ValidateNested()
-        @Type(() => Location)
-        location: Location;
+        @Type(() => LocationDto)
+        location: LocationDto;
     
     @IsNumber()
     radius: number;

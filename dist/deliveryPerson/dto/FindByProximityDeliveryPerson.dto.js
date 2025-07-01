@@ -12,8 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FindByProximityDeliveryPerson = void 0;
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
-const pagination_dto_1 = require("../../pagination/pagination.dto");
-const Location_dto_1 = require("../../location/Location.dto");
+const pagination_dto_1 = require("../../common/pagination/pagination.dto");
+const Location_dto_1 = require("../../common/dto/Location.dto");
 class FindByProximityDeliveryPerson extends pagination_dto_1.PaginationDto {
     location;
     radius;
@@ -22,8 +22,8 @@ exports.FindByProximityDeliveryPerson = FindByProximityDeliveryPerson;
 __decorate([
     (0, class_validator_1.IsObject)(),
     (0, class_validator_1.ValidateNested)(),
-    (0, class_transformer_1.Type)(() => Location_dto_1.Location),
-    __metadata("design:type", Location_dto_1.Location)
+    (0, class_transformer_1.Type)(() => Location_dto_1.LocationDto),
+    __metadata("design:type", Location_dto_1.LocationDto)
 ], FindByProximityDeliveryPerson.prototype, "location", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),

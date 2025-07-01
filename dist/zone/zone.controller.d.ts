@@ -2,7 +2,7 @@ import { ZoneService } from './zone.service';
 import { Zone } from './zone.entity';
 import { CreateZone } from './dto/CreateZone.dto';
 import { UpdatePartialZone } from './dto/UpdatePartialZone.dto';
-import { PaginationDto } from '../pagination/pagination.dto';
+import { PaginationDto } from '../common/pagination/pagination.dto';
 export declare class ZoneController {
     private readonly zoneService;
     constructor(zoneService: ZoneService);

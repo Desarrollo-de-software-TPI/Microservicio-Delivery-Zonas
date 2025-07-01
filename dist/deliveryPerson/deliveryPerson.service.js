@@ -26,6 +26,10 @@ let DeliveryPersonService = class DeliveryPersonService {
         this.deliveryPersonRepository = deliveryPersonRepository;
         this.zoneService = zoneService;
     }
+    async create(CreateDeliveryPerson) {
+        const deliveryPerson = this.deliveryPersonRepository.create(CreateDeliveryPerson);
+        return await this.deliveryPersonRepository.save(deliveryPerson);
+    }
     async findAll(paginationDto) {
         const { limit, offset } = paginationDto;
         const [deliveries, total] = await this.deliveryPersonRepository.findAndCount({
@@ -36,19 +40,20 @@ let DeliveryPersonService = class DeliveryPersonService {
         return { deliveries, total };
     }
     async findById(id) {
-        return await this.deliveryPersonRepository.findOneOrFail({ where: { id } });
-    }
-    async create(CreateDeliveryPerson) {
-        const deliveryPerson = this.deliveryPersonRepository.create(CreateDeliveryPerson);
-        return await this.deliveryPersonRepository.save(deliveryPerson);
+        return await this.deliveryPersonRepository.findOneOrFail({ where: { id }, relations: ['zones'] });
     }
     async updateLocation(id, updateLocation) {
-        await this.deliveryPersonRepository.update(id, updateLocation);
-        return this.deliveryPersonRepository.findOneOrFail({ where: { id } });
+        const deliveryPerson = await this.deliveryPersonRepository.findOne({ where: { id } });
+        if (!deliveryPerson) {
+            throw new common_1.NotFoundException(`Delivery person with ID ${id} not found`);
+        }
+        Object.assign(deliveryPerson, updateLocation);
+        return this.deliveryPersonRepository.save(deliveryPerson);
     }
-    async updateStatus(id, updateStatusDto) {
-        await this.deliveryPersonRepository.update(id, updateStatusDto);
-        return this.deliveryPersonRepository.findOneOrFail({ where: { id } });
+    async updateStatus(id, dto) {
+        const entity = await this.deliveryPersonRepository.findOneOrFail({ where: { id } });
+        Object.assign(entity, dto);
+        return this.deliveryPersonRepository.save(entity);
     }
     async findByProximity(findByProximityDto) {
         const { location, radius } = findByProximityDto;

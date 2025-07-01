@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DeliveryPersonController = void 0;
 const common_1 = require("@nestjs/common");
 const deliveryPerson_service_1 = require("./deliveryPerson.service");
-const pagination_dto_1 = require("../pagination/pagination.dto");
+const pagination_dto_1 = require("../common/pagination/pagination.dto");
 const CreateDeliveryPerson_dto_1 = require("./dto/CreateDeliveryPerson.dto");
 const UpdateLocationDeliveryPerson_dto_1 = require("./dto/UpdateLocationDeliveryPerson.dto");
 const UpdateStatusDeliveryPerson_dto_1 = require("./dto/UpdateStatusDeliveryPerson.dto");
@@ -26,8 +26,17 @@ const permissions_decorator_1 = require("../middlewares/decorators/permissions.d
 const auth_middleware_1 = require("../middlewares/auth.middleware");
 let DeliveryPersonController = class DeliveryPersonController {
     deliveryPersonService;
+    deliveryService;
     constructor(deliveryPersonService) {
         this.deliveryPersonService = deliveryPersonService;
+    }
+    async create(CreateDeliveryPerson) {
+        try {
+            return await this.deliveryPersonService.create(CreateDeliveryPerson);
+        }
+        catch (error) {
+            throw new common_1.HttpException(error.message, common_1.HttpStatus.BAD_REQUEST);
+        }
     }
     async findall(paginationDto) {
         try {
@@ -37,13 +46,8 @@ let DeliveryPersonController = class DeliveryPersonController {
             throw new common_1.HttpException(error.message, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    async create(CreateDeliveryPerson) {
-        try {
-            return await this.deliveryPersonService.create(CreateDeliveryPerson);
-        }
-        catch (error) {
-            throw new common_1.HttpException(error.message, common_1.HttpStatus.BAD_REQUEST);
-        }
+    findOne(id) {
+        return this.deliveryService.findOne(id);
     }
     async updateLocation(id, updateLocationDto) {
         try {
@@ -131,6 +135,15 @@ let DeliveryPersonController = class DeliveryPersonController {
 exports.DeliveryPersonController = DeliveryPersonController;
 __decorate([
     (0, common_1.UseGuards)(auth_middleware_1.AuthGuard),
+    (0, permissions_decorator_1.Permissions)(['delivery_create']),
+    (0, common_1.Post)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [CreateDeliveryPerson_dto_1.CreateDeliveryPerson]),
+    __metadata("design:returntype", Promise)
+], DeliveryPersonController.prototype, "create", null);
+__decorate([
+    (0, common_1.UseGuards)(auth_middleware_1.AuthGuard),
     (0, permissions_decorator_1.Permissions)(['delivery_read']),
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)()),
@@ -140,13 +153,13 @@ __decorate([
 ], DeliveryPersonController.prototype, "findall", null);
 __decorate([
     (0, common_1.UseGuards)(auth_middleware_1.AuthGuard),
-    (0, permissions_decorator_1.Permissions)(['delivery_create']),
-    (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
+    (0, permissions_decorator_1.Permissions)(['delivery_read']),
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [CreateDeliveryPerson_dto_1.CreateDeliveryPerson]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
-], DeliveryPersonController.prototype, "create", null);
+], DeliveryPersonController.prototype, "findOne", null);
 __decorate([
     (0, common_1.UseGuards)(auth_middleware_1.AuthGuard),
     (0, permissions_decorator_1.Permissions)(['delivery_edit']),

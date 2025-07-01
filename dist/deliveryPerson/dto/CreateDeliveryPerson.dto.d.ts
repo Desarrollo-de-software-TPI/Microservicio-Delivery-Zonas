@@ -1,6 +1,6 @@
-import { Location } from "../../location/Location.dto";
+import { LocationDto } from "../../common/dto/Location.dto";
 export declare class CreateDeliveryPerson {
     personId: number;
-    location: Location;
+    location: LocationDto;
     radius: number;
 }

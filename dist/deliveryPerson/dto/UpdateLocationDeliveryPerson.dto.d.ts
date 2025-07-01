@@ -1,4 +1,4 @@
-import { Location } from "../../location/Location.dto";
+import { LocationDto } from "../../common/dto/Location.dto";
 export declare class UpdateLocationDeliveryPerson {
-    location: Location;
+    location: LocationDto;
 }

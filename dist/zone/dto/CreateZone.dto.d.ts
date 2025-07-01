@@ -1,7 +1,7 @@
-import { Location } from "../../location/Location.dto";
+import { LocationDto } from "../../common/dto/Location.dto";
 export declare class CreateZone {
     name: string;
-    location: Location;
+    location: LocationDto;
     radius: number;
     deliveryPersonId?: number;
 }

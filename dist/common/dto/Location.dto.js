@@ -9,19 +9,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Location = void 0;
+exports.LocationDto = void 0;
 const class_validator_1 = require("class-validator");
-class Location {
+class LocationDto {
     lat;
     lng;
 }
-exports.Location = Location;
+exports.LocationDto = LocationDto;
 __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
-], Location.prototype, "lat", void 0);
+], LocationDto.prototype, "lat", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
-], Location.prototype, "lng", void 0);
+], LocationDto.prototype, "lng", void 0);
 //# sourceMappingURL=Location.dto.js.map
