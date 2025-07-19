@@ -135,7 +135,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ZoneController.prototype, "remove", null);
 exports.ZoneController = ZoneController = __decorate([
-    (0, common_1.Controller)('zone'),
+    (0, common_1.Controller)('zones'),
     __metadata("design:paramtypes", [zone_service_1.ZoneService])
 ], ZoneController);
 //# sourceMappingURL=zone.controller.js.map

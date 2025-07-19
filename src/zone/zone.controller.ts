@@ -9,7 +9,7 @@ import { PaginationDto } from '../common/pagination/pagination.dto';
 import {AuthGuard} from "../middlewares/auth.middleware";
 import {Permissions} from "../middlewares/decorators/permissions.decorator";
 
-@Controller('zone')
+@Controller('zones')
 export class ZoneController {
   constructor(private readonly zoneService: ZoneService) {}
 
