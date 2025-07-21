@@ -13,7 +13,8 @@ import { DeliveryPersonEntity } from './deliveryPerson.entity';
 
 @Controller('delivery')
 export class DeliveryPersonController {
-  deliveryService: any;
+
+  // deliveryService: any; // No se usa
   constructor(private readonly deliveryPersonService: DeliveryPersonService) {}
 
   @UseGuards(AuthGuard)
@@ -39,11 +40,15 @@ export class DeliveryPersonController {
     }
   }
   @UseGuards(AuthGuard)
-    @Permissions(['delivery_read'])
-    @Get(':id')
-    findOne(@Param('id') id: number): Promise<DeliveryPersonEntity> {
-        return this.deliveryService.findOne(id);
+  @Permissions(['delivery_read'])
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<DeliveryPersonEntity> {
+    try {
+      return await this.deliveryPersonService.findById(id);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
+  }
 
   @UseGuards(AuthGuard)
   @Permissions(['delivery_edit'])
@@ -77,7 +82,7 @@ export class DeliveryPersonController {
 
   @UseGuards(AuthGuard)
   @Permissions(['delivery_read','delivery_zone_assignment'])
-  @Get('findByProximity')
+  @Post('findByProximity')
   async findByProximity(@Body() findByProximityDto: FindByProximityDeliveryPerson) {
     try {
       return await this.deliveryPersonService.findByProximity(findByProximityDto);

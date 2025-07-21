@@ -9,7 +9,6 @@ import { AssignZoneDeliveryPerson } from './dto/AssignZoneDeliveryPerson.dto';
 import { DeliveryPersonEntity } from './deliveryPerson.entity';
 export declare class DeliveryPersonController {
     private readonly deliveryPersonService;
-    deliveryService: any;
     constructor(deliveryPersonService: DeliveryPersonService);
     create(CreateDeliveryPerson: CreateDeliveryPerson): Promise<DeliveryPersonEntity>;
     findall(paginationDto: PaginationDto): Promise<{

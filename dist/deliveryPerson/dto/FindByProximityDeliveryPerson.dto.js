@@ -20,7 +20,6 @@ class FindByProximityDeliveryPerson extends pagination_dto_1.PaginationDto {
 }
 exports.FindByProximityDeliveryPerson = FindByProximityDeliveryPerson;
 __decorate([
-    (0, class_validator_1.IsObject)(),
     (0, class_validator_1.ValidateNested)(),
     (0, class_transformer_1.Type)(() => Location_dto_1.LocationDto),
     __metadata("design:type", Location_dto_1.LocationDto)

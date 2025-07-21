@@ -13,6 +13,11 @@ import { FindByZone } from './dto/FindByZone.dto';
 import { AssignZoneDeliveryPerson } from './dto/AssignZoneDeliveryPerson.dto';
 @Injectable()
 export class DeliveryPersonService {
+  async unassignAllZones(deliveryPersonId: number): Promise<DeliveryPersonEntity> {
+    const deliveryPerson = await this.deliveryPersonRepository.findOneOrFail({ where: { id: deliveryPersonId }, relations: ['zones'] });
+    deliveryPerson.zones = [];
+    return await this.deliveryPersonRepository.save(deliveryPerson);
+  }
   constructor(
     @InjectRepository(DeliveryPersonEntity)
     private readonly deliveryPersonRepository: Repository<DeliveryPersonEntity>,
@@ -147,13 +152,19 @@ export class DeliveryPersonService {
   }
 
 
-  async unassignZone(deliveryPersonId: number, zoneId: number): Promise<DeliveryPersonEntity> {
-    const deliveryPerson = await this.deliveryPersonRepository.findOneOrFail({ where: { id: deliveryPersonId } });
-    const zone = await this.deliveryPersonRepository.manager.getRepository(Zone).findOneOrFail({ where: { id: zoneId } });
-    deliveryPerson.zones = deliveryPerson.zones.filter(z => z.id !== zone.id);
-    return await this.deliveryPersonRepository.save(deliveryPerson);
-  }
-
+async unassignZone(deliveryPersonId: number, zoneId: number): Promise<DeliveryPersonEntity> {
+  // Trae el delivery con las zonas asociadas
+  const deliveryPerson = await this.deliveryPersonRepository.findOneOrFail({
+    where: { id: deliveryPersonId },
+    relations: ['zones'],
+  });
+  // Trae la zona a eliminar
+  const zone = await this.deliveryPersonRepository.manager.getRepository(Zone).findOneOrFail({ where: { id: zoneId } });
+  // Elimina la zona del array
+  deliveryPerson.zones = deliveryPerson.zones.filter(z => z.id !== zone.id);
+  // Guarda el delivery actualizado
+  return await this.deliveryPersonRepository.save(deliveryPerson);
+}
 
   async remove(id: number): Promise<void> {
     await this.deliveryPersonRepository.delete(id);

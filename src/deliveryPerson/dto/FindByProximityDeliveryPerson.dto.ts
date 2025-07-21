@@ -4,7 +4,7 @@ import { PaginationDto } from "src/common/pagination/pagination.dto";
 import { LocationDto } from "../../common/dto/Location.dto";
 
 export class FindByProximityDeliveryPerson extends PaginationDto {
-    @IsObject()
+
     @ValidateNested()
     @Type(() => LocationDto)
     location: LocationDto;

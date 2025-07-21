@@ -22,6 +22,11 @@ const zone_service_1 = require("../zone/zone.service");
 let DeliveryPersonService = class DeliveryPersonService {
     deliveryPersonRepository;
     zoneService;
+    async unassignAllZones(deliveryPersonId) {
+        const deliveryPerson = await this.deliveryPersonRepository.findOneOrFail({ where: { id: deliveryPersonId }, relations: ['zones'] });
+        deliveryPerson.zones = [];
+        return await this.deliveryPersonRepository.save(deliveryPerson);
+    }
     constructor(deliveryPersonRepository, zoneService) {
         this.deliveryPersonRepository = deliveryPersonRepository;
         this.zoneService = zoneService;
@@ -102,7 +107,10 @@ let DeliveryPersonService = class DeliveryPersonService {
         return deliveryPerson.zones;
     }
     async unassignZone(deliveryPersonId, zoneId) {
-        const deliveryPerson = await this.deliveryPersonRepository.findOneOrFail({ where: { id: deliveryPersonId } });
+        const deliveryPerson = await this.deliveryPersonRepository.findOneOrFail({
+            where: { id: deliveryPersonId },
+            relations: ['zones'],
+        });
         const zone = await this.deliveryPersonRepository.manager.getRepository(zone_entity_1.Zone).findOneOrFail({ where: { id: zoneId } });
         deliveryPerson.zones = deliveryPerson.zones.filter(z => z.id !== zone.id);
         return await this.deliveryPersonRepository.save(deliveryPerson);

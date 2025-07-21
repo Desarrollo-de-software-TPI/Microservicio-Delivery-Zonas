@@ -26,7 +26,6 @@ const permissions_decorator_1 = require("../middlewares/decorators/permissions.d
 const auth_middleware_1 = require("../middlewares/auth.middleware");
 let DeliveryPersonController = class DeliveryPersonController {
     deliveryPersonService;
-    deliveryService;
     constructor(deliveryPersonService) {
         this.deliveryPersonService = deliveryPersonService;
     }
@@ -46,8 +45,13 @@ let DeliveryPersonController = class DeliveryPersonController {
             throw new common_1.HttpException(error.message, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    findOne(id) {
-        return this.deliveryService.findOne(id);
+    async findOne(id) {
+        try {
+            return await this.deliveryPersonService.findById(id);
+        }
+        catch (error) {
+            throw new common_1.HttpException(error.message, common_1.HttpStatus.NOT_FOUND);
+        }
     }
     async updateLocation(id, updateLocationDto) {
         try {
@@ -155,7 +159,7 @@ __decorate([
     (0, common_1.UseGuards)(auth_middleware_1.AuthGuard),
     (0, permissions_decorator_1.Permissions)(['delivery_read']),
     (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
@@ -183,7 +187,7 @@ __decorate([
 __decorate([
     (0, common_1.UseGuards)(auth_middleware_1.AuthGuard),
     (0, permissions_decorator_1.Permissions)(['delivery_read', 'delivery_zone_assignment']),
-    (0, common_1.Get)('findByProximity'),
+    (0, common_1.Post)('findByProximity'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [FindByProximityDeliveryPerson_dto_1.FindByProximityDeliveryPerson]),
