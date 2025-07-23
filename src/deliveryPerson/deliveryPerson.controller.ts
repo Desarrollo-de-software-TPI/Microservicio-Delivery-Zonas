@@ -92,8 +92,8 @@ export class DeliveryPersonController {
   }
 
   @UseGuards(AuthGuard)
-  @Permissions(['delivery_read'])
-  @Get('findByZone')
+  @Permissions(['delivery_read', 'delivery_zone_assignment'])
+  @Post('findByZone')
   async findByZone(@Body() FindByZone: FindByZone) {
     try {
       return await this.deliveryPersonService.findByZone(FindByZone);

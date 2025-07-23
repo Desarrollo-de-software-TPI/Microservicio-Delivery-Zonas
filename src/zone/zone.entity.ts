@@ -16,7 +16,11 @@ export class Zone extends BaseEntity{
     @Column({ type: "decimal", precision: 10, scale: 3 })
     radius: number; //numero porque es radio en km, radio en km cuadradros que cubre la zona
 
-    @ManyToMany(() => DeliveryPersonEntity, deliveryPerson => deliveryPerson.zones)
+    @ManyToMany(
+        () => DeliveryPersonEntity,
+        deliveryPerson => deliveryPerson.zones,
+        { onDelete: 'CASCADE' }
+    )
     deliveryPerson: DeliveryPersonEntity[];
 }
 

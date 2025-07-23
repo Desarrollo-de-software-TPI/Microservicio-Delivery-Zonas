@@ -186,7 +186,7 @@ __decorate([
 ], DeliveryPersonController.prototype, "updateStatus", null);
 __decorate([
     (0, common_1.UseGuards)(auth_middleware_1.AuthGuard),
-    (0, permissions_decorator_1.Permissions)(['delivery_read', 'delivery_zone_assignment']),
+    (0, permissions_decorator_1.Permissions)(['delivery_read']),
     (0, common_1.Post)('findByProximity'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -196,7 +196,7 @@ __decorate([
 __decorate([
     (0, common_1.UseGuards)(auth_middleware_1.AuthGuard),
     (0, permissions_decorator_1.Permissions)(['delivery_read']),
-    (0, common_1.Get)('findByZone'),
+    (0, common_1.Post)('findByZone'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [FindByZone_dto_1.FindByZone]),
